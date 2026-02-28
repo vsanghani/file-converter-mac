@@ -84,6 +84,10 @@
         },
         {
           "kind" : "file",
+          "name" : "/Users/vsanghani/_GitHub/file-converter-mac/FileConverter/Views/GlassComponents.swift"
+        },
+        {
+          "kind" : "file",
           "name" : "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/swift-version--1AB21518FC5DEDBE.txt"
         },
         {
@@ -109,7 +113,8 @@
         "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/ConversionProgressView.swift.o",
         "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/DropZoneView.swift.o",
         "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/FileListView.swift.o",
-        "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/FormatPickerView.swift.o"
+        "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/FormatPickerView.swift.o",
+        "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/GlassComponents.swift.o"
       ],
       "otherArguments" : [
         "-target",
@@ -212,6 +217,10 @@
         },
         {
           "kind" : "file",
+          "name" : "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/GlassComponents.swift.o"
+        },
+        {
+          "kind" : "file",
           "name" : "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/Modules/FileConverter.swiftmodule"
         }
       ],
@@ -231,7 +240,8 @@
         "/Users/vsanghani/_GitHub/file-converter-mac/FileConverter/Views/ConversionProgressView.swift",
         "/Users/vsanghani/_GitHub/file-converter-mac/FileConverter/Views/DropZoneView.swift",
         "/Users/vsanghani/_GitHub/file-converter-mac/FileConverter/Views/FileListView.swift",
-        "/Users/vsanghani/_GitHub/file-converter-mac/FileConverter/Views/FormatPickerView.swift"
+        "/Users/vsanghani/_GitHub/file-converter-mac/FileConverter/Views/FormatPickerView.swift",
+        "/Users/vsanghani/_GitHub/file-converter-mac/FileConverter/Views/GlassComponents.swift"
       ],
       "tempsPath" : "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build",
       "wholeModuleOptimization" : false
@@ -264,6 +274,7 @@
       "/Users/vsanghani/_GitHub/file-converter-mac/FileConverter/Views/DropZoneView.swift",
       "/Users/vsanghani/_GitHub/file-converter-mac/FileConverter/Views/FileListView.swift",
       "/Users/vsanghani/_GitHub/file-converter-mac/FileConverter/Views/FormatPickerView.swift",
+      "/Users/vsanghani/_GitHub/file-converter-mac/FileConverter/Views/GlassComponents.swift",
       "-I",
       "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/Modules",
       "-target",
@@ -400,6 +411,10 @@
         {
           "kind" : "file",
           "name" : "/Users/vsanghani/_GitHub/file-converter-mac/FileConverter/Views/FormatPickerView.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/vsanghani/_GitHub/file-converter-mac/FileConverter/Views/GlassComponents.swift"
         }
       ],
       "outputFilePath" : "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/sources"
@@ -458,6 +473,10 @@
         {
           "kind" : "file",
           "name" : "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/FormatPickerView.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/GlassComponents.swift.o"
         },
         {
           "kind" : "file",

@@ -1,80 +1,144 @@
 import SwiftUI
 import UniformTypeIdentifiers
 
-/// Drag-and-drop zone for adding files
+/// Glassmorphic drag-and-drop zone
 struct DropZoneView: View {
     @ObservedObject var viewModel: ConverterViewModel
     @State private var isTargeted = false
     @State private var showFileImporter = false
+    @State private var pulseAnimation = false
 
     var body: some View {
         ZStack {
-            // Background
-            RoundedRectangle(cornerRadius: 20)
-                .fill(
-                    isTargeted
-                        ? Color.accentColor.opacity(0.15)
-                        : Color(nsColor: .controlBackgroundColor).opacity(0.5)
+            // Glass background
+            RoundedRectangle(cornerRadius: 24)
+                .fill(.ultraThinMaterial)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 24)
+                        .fill(
+                            isTargeted
+                                ? Color.cyan.opacity(0.1)
+                                : Color.white.opacity(0.04)
+                        )
                 )
                 .overlay(
-                    RoundedRectangle(cornerRadius: 20)
+                    RoundedRectangle(cornerRadius: 24)
                         .strokeBorder(
-                            isTargeted ? Color.accentColor : Color.secondary.opacity(0.3),
-                            style: StrokeStyle(lineWidth: 2, dash: [10, 5])
+                            isTargeted
+                                ? LinearGradient(
+                                    colors: [.cyan.opacity(0.6), .blue.opacity(0.4)],
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                )
+                                : LinearGradient(
+                                    colors: [.white.opacity(0.15), .white.opacity(0.05)],
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                ),
+                            style: StrokeStyle(
+                                lineWidth: isTargeted ? 2 : 1,
+                                dash: isTargeted ? [] : [12, 8]
+                            )
                         )
                 )
-                .animation(.easeInOut(duration: 0.2), value: isTargeted)
+                .shadow(color: isTargeted ? .cyan.opacity(0.2) : .black.opacity(0.1), radius: 20, y: 8)
+                .animation(.easeInOut(duration: 0.3), value: isTargeted)
 
             // Content
-            VStack(spacing: 16) {
-                Image(systemName: isTargeted ? "arrow.down.circle.fill" : "square.and.arrow.down")
-                    .font(.system(size: 48, weight: .light))
-                    .foregroundStyle(
-                        isTargeted
-                            ? AnyShapeStyle(Color.accentColor)
-                            : AnyShapeStyle(LinearGradient(
-                                colors: [.blue, .purple],
+            VStack(spacing: 20) {
+                // Animated icon
+                ZStack {
+                    // Glow ring
+                    Circle()
+                        .stroke(
+                            LinearGradient(
+                                colors: [.blue.opacity(0.3), .purple.opacity(0.3), .cyan.opacity(0.3)],
                                 startPoint: .topLeading,
                                 endPoint: .bottomTrailing
-                            ))
-                    )
-                    .scaleEffect(isTargeted ? 1.2 : 1.0)
-                    .animation(.spring(response: 0.3), value: isTargeted)
+                            ),
+                            lineWidth: 2
+                        )
+                        .frame(width: 80, height: 80)
+                        .scaleEffect(pulseAnimation ? 1.15 : 1.0)
+                        .opacity(pulseAnimation ? 0 : 0.6)
+
+                    Circle()
+                        .fill(
+                            LinearGradient(
+                                colors: [
+                                    Color.blue.opacity(0.15),
+                                    Color.purple.opacity(0.1)
+                                ],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
+                        .frame(width: 72, height: 72)
+                        .overlay(
+                            Circle()
+                                .strokeBorder(
+                                    LinearGradient(
+                                        colors: [.white.opacity(0.2), .white.opacity(0.05)],
+                                        startPoint: .top,
+                                        endPoint: .bottom
+                                    ),
+                                    lineWidth: 1
+                                )
+                        )
+
+                    Image(systemName: isTargeted ? "arrow.down.circle.fill" : "square.and.arrow.down.fill")
+                        .font(.system(size: 30, weight: .medium))
+                        .foregroundStyle(
+                            LinearGradient(
+                                colors: [.cyan, .blue],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
+                        .scaleEffect(isTargeted ? 1.15 : 1.0)
+                        .animation(.spring(response: 0.3), value: isTargeted)
+                }
 
                 VStack(spacing: 6) {
-                    Text("Drop Files Here")
-                        .font(.title2)
-                        .fontWeight(.semibold)
-                        .foregroundColor(.primary)
+                    Text(isTargeted ? "Release to Add" : "Drop Files Here")
+                        .font(.system(size: 20, weight: .bold, design: .rounded))
+                        .foregroundColor(.white)
 
-                    Text("or click to browse")
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
+                    Text("or browse from your Mac")
+                        .font(.system(size: 13, weight: .medium))
+                        .foregroundColor(.white.opacity(0.4))
                 }
 
+                // Browse button
                 Button(action: { showFileImporter = true }) {
-                    Label("Browse Files", systemImage: "folder")
-                        .font(.system(size: 14, weight: .medium))
-                        .padding(.horizontal, 24)
-                        .padding(.vertical, 10)
-                        .background(
-                            Capsule()
-                                .fill(Color.accentColor.opacity(0.15))
-                        )
-                        .overlay(
-                            Capsule()
-                                .strokeBorder(Color.accentColor.opacity(0.3), lineWidth: 1)
-                        )
+                    HStack(spacing: 8) {
+                        Image(systemName: "folder.badge.plus")
+                            .font(.system(size: 14))
+                        Text("Browse Files")
+                            .font(.system(size: 13, weight: .semibold))
+                    }
+                    .padding(.horizontal, 24)
+                    .padding(.vertical, 10)
+                    .background(
+                        Capsule()
+                            .fill(Color.white.opacity(0.08))
+                            .overlay(
+                                Capsule()
+                                    .strokeBorder(Color.white.opacity(0.15), lineWidth: 0.5)
+                            )
+                    )
+                    .foregroundColor(.white.opacity(0.8))
                 }
                 .buttonStyle(.plain)
-                .foregroundColor(.accentColor)
 
-                // Supported formats hint
-                Text("Images • Documents • Audio • Video")
-                    .font(.caption)
-                    .foregroundColor(.secondary.opacity(0.7))
+                // Supported formats
+                HStack(spacing: 16) {
+                    formatHint(icon: "photo.fill", text: "Images", color: .blue)
+                    formatHint(icon: "doc.text.fill", text: "Documents", color: .orange)
+                    formatHint(icon: "film.fill", text: "Media", color: .purple)
+                }
             }
-            .padding(32)
+            .padding(36)
         }
         .onDrop(of: [.fileURL], isTargeted: $isTargeted) { providers in
             handleDrop(providers: providers)
@@ -99,6 +163,22 @@ struct DropZoneView: View {
         }
         .onTapGesture {
             showFileImporter = true
+        }
+        .onAppear {
+            withAnimation(.easeInOut(duration: 2).repeatForever(autoreverses: false)) {
+                pulseAnimation = true
+            }
+        }
+    }
+
+    private func formatHint(icon: String, text: String, color: Color) -> some View {
+        HStack(spacing: 5) {
+            Image(systemName: icon)
+                .font(.system(size: 10))
+                .foregroundColor(color.opacity(0.8))
+            Text(text)
+                .font(.system(size: 11, weight: .medium))
+                .foregroundColor(.white.opacity(0.35))
         }
     }
 
