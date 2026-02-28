@@ -1,0 +1,15 @@
+/Users/vsanghani/_GitHub/file-converter-mac/FileConverter/FileConverterApp.swift
+/Users/vsanghani/_GitHub/file-converter-mac/FileConverter/Models/ConversionError.swift
+/Users/vsanghani/_GitHub/file-converter-mac/FileConverter/Models/ConversionJob.swift
+/Users/vsanghani/_GitHub/file-converter-mac/FileConverter/Models/SupportedFormat.swift
+/Users/vsanghani/_GitHub/file-converter-mac/FileConverter/Services/ConversionEngine.swift
+/Users/vsanghani/_GitHub/file-converter-mac/FileConverter/Services/DocumentConversionService.swift
+/Users/vsanghani/_GitHub/file-converter-mac/FileConverter/Services/ImageConversionService.swift
+/Users/vsanghani/_GitHub/file-converter-mac/FileConverter/Services/MediaConversionService.swift
+/Users/vsanghani/_GitHub/file-converter-mac/FileConverter/Utilities/FileTypeDetector.swift
+/Users/vsanghani/_GitHub/file-converter-mac/FileConverter/ViewModels/ConverterViewModel.swift
+/Users/vsanghani/_GitHub/file-converter-mac/FileConverter/Views/ContentView.swift
+/Users/vsanghani/_GitHub/file-converter-mac/FileConverter/Views/ConversionProgressView.swift
+/Users/vsanghani/_GitHub/file-converter-mac/FileConverter/Views/DropZoneView.swift
+/Users/vsanghani/_GitHub/file-converter-mac/FileConverter/Views/FileListView.swift
+/Users/vsanghani/_GitHub/file-converter-mac/FileConverter/Views/FormatPickerView.swift

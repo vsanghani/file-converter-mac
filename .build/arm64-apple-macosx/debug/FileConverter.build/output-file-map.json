@@ -1,0 +1,95 @@
+{
+  "": {
+    "swift-dependencies": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/master.swiftdeps"
+  },
+  "/Users/vsanghani/_GitHub/file-converter-mac/FileConverter/FileConverterApp.swift": {
+    "dependencies": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/FileConverterApp.d",
+    "object": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/FileConverterApp.swift.o",
+    "swiftmodule": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/FileConverterApp~partial.swiftmodule",
+    "swift-dependencies": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/FileConverterApp.swiftdeps"
+  },
+  "/Users/vsanghani/_GitHub/file-converter-mac/FileConverter/Models/ConversionError.swift": {
+    "dependencies": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/ConversionError.d",
+    "object": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/ConversionError.swift.o",
+    "swiftmodule": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/ConversionError~partial.swiftmodule",
+    "swift-dependencies": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/ConversionError.swiftdeps"
+  },
+  "/Users/vsanghani/_GitHub/file-converter-mac/FileConverter/Models/ConversionJob.swift": {
+    "dependencies": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/ConversionJob.d",
+    "object": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/ConversionJob.swift.o",
+    "swiftmodule": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/ConversionJob~partial.swiftmodule",
+    "swift-dependencies": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/ConversionJob.swiftdeps"
+  },
+  "/Users/vsanghani/_GitHub/file-converter-mac/FileConverter/Models/SupportedFormat.swift": {
+    "dependencies": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/SupportedFormat.d",
+    "object": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/SupportedFormat.swift.o",
+    "swiftmodule": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/SupportedFormat~partial.swiftmodule",
+    "swift-dependencies": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/SupportedFormat.swiftdeps"
+  },
+  "/Users/vsanghani/_GitHub/file-converter-mac/FileConverter/Services/ConversionEngine.swift": {
+    "dependencies": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/ConversionEngine.d",
+    "object": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/ConversionEngine.swift.o",
+    "swiftmodule": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/ConversionEngine~partial.swiftmodule",
+    "swift-dependencies": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/ConversionEngine.swiftdeps"
+  },
+  "/Users/vsanghani/_GitHub/file-converter-mac/FileConverter/Services/DocumentConversionService.swift": {
+    "dependencies": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/DocumentConversionService.d",
+    "object": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/DocumentConversionService.swift.o",
+    "swiftmodule": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/DocumentConversionService~partial.swiftmodule",
+    "swift-dependencies": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/DocumentConversionService.swiftdeps"
+  },
+  "/Users/vsanghani/_GitHub/file-converter-mac/FileConverter/Services/ImageConversionService.swift": {
+    "dependencies": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/ImageConversionService.d",
+    "object": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/ImageConversionService.swift.o",
+    "swiftmodule": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/ImageConversionService~partial.swiftmodule",
+    "swift-dependencies": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/ImageConversionService.swiftdeps"
+  },
+  "/Users/vsanghani/_GitHub/file-converter-mac/FileConverter/Services/MediaConversionService.swift": {
+    "dependencies": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/MediaConversionService.d",
+    "object": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/MediaConversionService.swift.o",
+    "swiftmodule": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/MediaConversionService~partial.swiftmodule",
+    "swift-dependencies": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/MediaConversionService.swiftdeps"
+  },
+  "/Users/vsanghani/_GitHub/file-converter-mac/FileConverter/Utilities/FileTypeDetector.swift": {
+    "dependencies": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/FileTypeDetector.d",
+    "object": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/FileTypeDetector.swift.o",
+    "swiftmodule": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/FileTypeDetector~partial.swiftmodule",
+    "swift-dependencies": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/FileTypeDetector.swiftdeps"
+  },
+  "/Users/vsanghani/_GitHub/file-converter-mac/FileConverter/ViewModels/ConverterViewModel.swift": {
+    "dependencies": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/ConverterViewModel.d",
+    "object": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/ConverterViewModel.swift.o",
+    "swiftmodule": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/ConverterViewModel~partial.swiftmodule",
+    "swift-dependencies": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/ConverterViewModel.swiftdeps"
+  },
+  "/Users/vsanghani/_GitHub/file-converter-mac/FileConverter/Views/ContentView.swift": {
+    "dependencies": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/ContentView.d",
+    "object": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/ContentView.swift.o",
+    "swiftmodule": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/ContentView~partial.swiftmodule",
+    "swift-dependencies": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/ContentView.swiftdeps"
+  },
+  "/Users/vsanghani/_GitHub/file-converter-mac/FileConverter/Views/ConversionProgressView.swift": {
+    "dependencies": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/ConversionProgressView.d",
+    "object": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/ConversionProgressView.swift.o",
+    "swiftmodule": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/ConversionProgressView~partial.swiftmodule",
+    "swift-dependencies": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/ConversionProgressView.swiftdeps"
+  },
+  "/Users/vsanghani/_GitHub/file-converter-mac/FileConverter/Views/DropZoneView.swift": {
+    "dependencies": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/DropZoneView.d",
+    "object": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/DropZoneView.swift.o",
+    "swiftmodule": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/DropZoneView~partial.swiftmodule",
+    "swift-dependencies": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/DropZoneView.swiftdeps"
+  },
+  "/Users/vsanghani/_GitHub/file-converter-mac/FileConverter/Views/FileListView.swift": {
+    "dependencies": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/FileListView.d",
+    "object": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/FileListView.swift.o",
+    "swiftmodule": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/FileListView~partial.swiftmodule",
+    "swift-dependencies": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/FileListView.swiftdeps"
+  },
+  "/Users/vsanghani/_GitHub/file-converter-mac/FileConverter/Views/FormatPickerView.swift": {
+    "dependencies": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/FormatPickerView.d",
+    "object": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/FormatPickerView.swift.o",
+    "swiftmodule": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/FormatPickerView~partial.swiftmodule",
+    "swift-dependencies": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/FormatPickerView.swiftdeps"
+  }
+}
