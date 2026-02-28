@@ -1,65 +1,72 @@
 import SwiftUI
 
-/// Main content view of the File Converter application
+/// Main content view — immersive glassmorphism layout
 struct ContentView: View {
-    @StateObject private var viewModel = ConverterViewModel()
+    @ObservedObject var viewModel: ConverterViewModel
+    @State private var showAbout = false
 
     var body: some View {
         ZStack {
-            // Background gradient
-            backgroundGradient
+            // Animated background
+            AnimatedMeshBackground()
 
+            // Main layout
             VStack(spacing: 0) {
-                // Title bar area
-                titleBar
+                // Custom title bar
+                customTitleBar
+                    .padding(.top, 8)
 
-                // Main content
-                ScrollView {
-                    VStack(spacing: 16) {
+                // Content area
+                ScrollView(.vertical, showsIndicators: false) {
+                    VStack(spacing: 20) {
                         // Drop zone
                         DropZoneView(viewModel: viewModel)
-                            .frame(minHeight: viewModel.hasFiles ? 140 : 200)
+                            .frame(minHeight: viewModel.hasFiles ? 160 : 220)
 
-                        // Format picker (shown when files are added)
+                        // Format picker + controls
                         if viewModel.hasFiles {
                             FormatPickerView(viewModel: viewModel)
-                                .transition(.move(edge: .top).combined(with: .opacity))
+                                .transition(.asymmetric(
+                                    insertion: .move(edge: .top).combined(with: .opacity),
+                                    removal: .scale.combined(with: .opacity)
+                                ))
                         }
 
-                        // Progress (shown during/after conversion)
+                        // Progress
                         if viewModel.isConverting || viewModel.overallProgress > 0 {
                             ConversionProgressView(viewModel: viewModel)
                                 .transition(.move(edge: .top).combined(with: .opacity))
                         }
 
-                        // Output directory selector
+                        // Action buttons
                         if viewModel.hasFiles {
-                            outputDirectorySection
-                                .transition(.opacity)
-                        }
-
-                        // Convert button
-                        if viewModel.hasFiles {
-                            convertButton
-                                .transition(.scale.combined(with: .opacity))
+                            actionButtons
+                                .transition(.scale(scale: 0.9).combined(with: .opacity))
                         }
 
                         // File list
                         if viewModel.hasFiles {
                             FileListView(viewModel: viewModel)
-                                .frame(minHeight: 150)
                                 .transition(.move(edge: .bottom).combined(with: .opacity))
                         }
                     }
-                    .padding(20)
-                    .animation(.spring(response: 0.4, dampingFraction: 0.8), value: viewModel.hasFiles)
-                    .animation(.spring(response: 0.4, dampingFraction: 0.8), value: viewModel.isConverting)
+                    .padding(.horizontal, 24)
+                    .padding(.vertical, 16)
+                    .animation(.spring(response: 0.5, dampingFraction: 0.8), value: viewModel.hasFiles)
+                    .animation(.spring(response: 0.5, dampingFraction: 0.8), value: viewModel.isConverting)
                 }
             }
         }
-        .frame(minWidth: 700, minHeight: 550)
+        .preferredColorScheme(.dark)
         .alert("Conversion Complete", isPresented: $viewModel.showCompletionAlert) {
             Button("OK") {}
+            if viewModel.completedCount > 0 {
+                Button("Open in Finder") {
+                    if let job = viewModel.jobs.first(where: { $0.status.isCompleted }) {
+                        viewModel.revealInFinder(job)
+                    }
+                }
+            }
         } message: {
             Text(completionMessage)
         }
@@ -70,124 +77,120 @@ struct ContentView: View {
         }
     }
 
-    // MARK: - Subviews
+    // MARK: - Custom Title Bar
 
-    private var backgroundGradient: some View {
-        LinearGradient(
-            colors: [
-                Color(nsColor: .windowBackgroundColor),
-                Color(nsColor: .windowBackgroundColor).opacity(0.95),
-                Color.accentColor.opacity(0.03)
-            ],
-            startPoint: .top,
-            endPoint: .bottom
-        )
-        .ignoresSafeArea()
-    }
-
-    private var titleBar: some View {
-        HStack {
-            VStack(alignment: .leading, spacing: 2) {
-                Text("File Converter")
-                    .font(.title)
-                    .fontWeight(.bold)
-
-                Text("Convert images, documents & media locally")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-            }
-
-            Spacer()
-
-            // Supported formats count
-            VStack(alignment: .trailing, spacing: 2) {
-                Text("\(SupportedFormat.allCases.count)")
-                    .font(.system(size: 28, weight: .bold, design: .rounded))
-                    .foregroundStyle(
+    private var customTitleBar: some View {
+        HStack(spacing: 16) {
+            // App icon area
+            ZStack {
+                Circle()
+                    .fill(
                         LinearGradient(
                             colors: [.blue, .purple],
-                            startPoint: .leading,
-                            endPoint: .trailing
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
                         )
                     )
-                Text("formats supported")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
+                    .frame(width: 38, height: 38)
+                Image(systemName: "arrow.triangle.2.circlepath")
+                    .font(.system(size: 18, weight: .semibold))
+                    .foregroundColor(.white)
             }
-        }
-        .padding(.horizontal, 24)
-        .padding(.top, 16)
-        .padding(.bottom, 8)
-    }
 
-    private var outputDirectorySection: some View {
-        HStack {
-            Image(systemName: "folder.fill")
-                .foregroundColor(.secondary)
-
-            if let dir = viewModel.outputDirectory {
-                Text(dir.lastPathComponent)
-                    .font(.subheadline)
-                    .lineLimit(1)
-                    .truncationMode(.head)
-            } else {
-                Text("Save to: Same as source folder")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
+            VStack(alignment: .leading, spacing: 1) {
+                Text("File Converter")
+                    .font(.system(size: 18, weight: .bold, design: .rounded))
+                    .foregroundColor(.white)
+                Text("Convert anything, locally")
+                    .font(.system(size: 12, weight: .medium))
+                    .foregroundColor(.white.opacity(0.5))
             }
 
             Spacer()
 
-            Button("Change...") {
-                viewModel.chooseOutputDirectory()
+            // Stats pill
+            HStack(spacing: 8) {
+                statPill(
+                    icon: "doc.on.doc.fill",
+                    value: "\(viewModel.jobs.count)",
+                    label: "files"
+                )
+
+                statPill(
+                    icon: "square.grid.3x3.fill",
+                    value: "\(SupportedFormat.allCases.count)",
+                    label: "formats"
+                )
             }
-            .buttonStyle(.bordered)
-            .controlSize(.small)
+
+            // Output folder button
+            Button(action: viewModel.chooseOutputDirectory) {
+                HStack(spacing: 6) {
+                    Image(systemName: "folder.fill")
+                        .font(.system(size: 12))
+                    Text(viewModel.outputDirectory?.lastPathComponent ?? "Source folder")
+                        .font(.system(size: 11, weight: .medium))
+                        .lineLimit(1)
+                }
+                .padding(.horizontal, 12)
+                .padding(.vertical, 7)
+                .background(Color.white.opacity(0.08))
+                .clipShape(Capsule())
+                .overlay(
+                    Capsule().strokeBorder(Color.white.opacity(0.1), lineWidth: 0.5)
+                )
+                .foregroundColor(.white.opacity(0.7))
+            }
+            .buttonStyle(.plain)
         }
-        .padding(.horizontal, 16)
+        .padding(.horizontal, 24)
         .padding(.vertical, 10)
-        .background(
-            RoundedRectangle(cornerRadius: 12)
-                .fill(Color(nsColor: .controlBackgroundColor).opacity(0.5))
-        )
     }
 
-    private var convertButton: some View {
-        Button(action: {
-            if viewModel.isConverting {
-                viewModel.cancelConversion()
-            } else {
-                viewModel.startConversion()
-            }
-        }) {
-            HStack(spacing: 10) {
-                Image(systemName: viewModel.isConverting ? "stop.fill" : "bolt.fill")
-                    .font(.system(size: 16, weight: .semibold))
-
-                Text(viewModel.isConverting ? "Cancel" : "Convert Files")
-                    .font(.system(size: 16, weight: .semibold))
-            }
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 14)
-            .background(
-                RoundedRectangle(cornerRadius: 14)
-                    .fill(
-                        viewModel.isConverting
-                            ? AnyShapeStyle(Color.red.opacity(0.8))
-                            : AnyShapeStyle(LinearGradient(
-                                colors: viewModel.canConvert
-                                    ? [.blue, .purple]
-                                    : [.gray.opacity(0.5), .gray.opacity(0.3)],
-                                startPoint: .leading,
-                                endPoint: .trailing
-                            ))
-                    )
-            )
-            .foregroundColor(.white)
-            .shadow(color: viewModel.canConvert ? .blue.opacity(0.3) : .clear, radius: 10, y: 4)
+    private func statPill(icon: String, value: String, label: String) -> some View {
+        HStack(spacing: 5) {
+            Image(systemName: icon)
+                .font(.system(size: 10))
+                .foregroundColor(.cyan.opacity(0.8))
+            Text(value)
+                .font(.system(size: 13, weight: .bold, design: .monospaced))
+                .foregroundColor(.white)
+            Text(label)
+                .font(.system(size: 10, weight: .medium))
+                .foregroundColor(.white.opacity(0.4))
         }
-        .buttonStyle(.plain)
-        .disabled(!viewModel.canConvert && !viewModel.isConverting)
+        .padding(.horizontal, 10)
+        .padding(.vertical, 6)
+        .background(Color.white.opacity(0.06))
+        .clipShape(Capsule())
+    }
+
+    // MARK: - Action Buttons
+
+    private var actionButtons: some View {
+        HStack(spacing: 12) {
+            if viewModel.isConverting {
+                GlowButton(
+                    title: "Cancel",
+                    icon: "stop.fill",
+                    colors: [.red.opacity(0.8), .orange.opacity(0.7)]
+                ) {
+                    viewModel.cancelConversion()
+                }
+            } else {
+                GlowButton(
+                    title: "Convert \(viewModel.jobs.count) File\(viewModel.jobs.count == 1 ? "" : "s")",
+                    icon: "bolt.fill",
+                    colors: [
+                        Color(red: 0.3, green: 0.5, blue: 1.0),
+                        Color(red: 0.6, green: 0.3, blue: 1.0)
+                    ],
+                    isDisabled: !viewModel.canConvert
+                ) {
+                    viewModel.startConversion()
+                }
+            }
+        }
     }
 
     private var completionMessage: String {

@@ -91,5 +91,11 @@
     "object": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/FormatPickerView.swift.o",
     "swiftmodule": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/FormatPickerView~partial.swiftmodule",
     "swift-dependencies": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/FormatPickerView.swiftdeps"
+  },
+  "/Users/vsanghani/_GitHub/file-converter-mac/FileConverter/Views/GlassComponents.swift": {
+    "dependencies": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/GlassComponents.d",
+    "object": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/GlassComponents.swift.o",
+    "swiftmodule": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/GlassComponents~partial.swiftmodule",
+    "swift-dependencies": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/GlassComponents.swiftdeps"
   }
 }
