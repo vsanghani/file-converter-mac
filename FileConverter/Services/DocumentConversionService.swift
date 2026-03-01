@@ -4,23 +4,30 @@ import PDFKit
 import UniformTypeIdentifiers
 
 /// Service for converting between document formats
-actor DocumentConversionService {
+struct DocumentConversionService {
 
     /// Convert a document file from one format to another
-    func convert(sourceURL: URL, targetFormat: SupportedFormat, outputURL: URL) async throws {
+    func convert(sourceURL: URL, targetFormat: SupportedFormat, outputURL: URL) throws {
         guard let sourceFormat = SupportedFormat.detect(from: sourceURL),
               sourceFormat.category == .document else {
             throw ConversionError.unsupportedFormat(sourceURL.pathExtension)
         }
 
+        // Read data into memory first (handles security-scoped resources)
+        let sourceData = try Data(contentsOf: sourceURL)
+
+        guard !sourceData.isEmpty else {
+            throw ConversionError.failedToLoadFile(sourceURL.lastPathComponent)
+        }
+
         // PDF source — special handling
         if sourceFormat == .pdf {
-            try convertFromPDF(sourceURL: sourceURL, targetFormat: targetFormat, outputURL: outputURL)
+            try convertFromPDF(data: sourceData, targetFormat: targetFormat, outputURL: outputURL)
             return
         }
 
         // Non-PDF source — load as NSAttributedString
-        let attributedString = try loadAttributedString(from: sourceURL, format: sourceFormat)
+        let attributedString = try loadAttributedString(from: sourceData, format: sourceFormat)
 
         // Convert to target
         switch targetFormat {
@@ -41,9 +48,7 @@ actor DocumentConversionService {
 
     // MARK: - Private Helpers
 
-    private func loadAttributedString(from url: URL, format: SupportedFormat) throws -> NSAttributedString {
-        let data = try Data(contentsOf: url)
-
+    private func loadAttributedString(from data: Data, format: SupportedFormat) throws -> NSAttributedString {
         let documentType: NSAttributedString.DocumentType
         switch format {
         case .rtf: documentType = .rtf
@@ -54,19 +59,36 @@ actor DocumentConversionService {
             throw ConversionError.unsupportedFormat(format.displayName)
         }
 
-        let options: [NSAttributedString.DocumentReadingOptionKey: Any] = [
-            .documentType: documentType,
-            .characterEncoding: String.Encoding.utf8.rawValue
+        // Try without specifying encoding first, then with UTF-8
+        var options: [NSAttributedString.DocumentReadingOptionKey: Any] = [
+            .documentType: documentType
         ]
 
-        return try NSAttributedString(data: data, options: options, documentAttributes: nil)
+        if format == .txt {
+            options[.characterEncoding] = String.Encoding.utf8.rawValue
+        }
+
+        do {
+            return try NSAttributedString(data: data, options: options, documentAttributes: nil)
+        } catch {
+            // Fallback: try as plain text
+            if let text = String(data: data, encoding: .utf8) {
+                return NSAttributedString(
+                    string: text,
+                    attributes: [
+                        .font: NSFont.monospacedSystemFont(ofSize: 12, weight: .regular),
+                        .foregroundColor: NSColor.textColor
+                    ]
+                )
+            }
+            throw ConversionError.failedToLoadFile("Could not read document: \(error.localizedDescription)")
+        }
     }
 
     private func writeAttributedString(_ attrString: NSAttributedString, to url: URL, documentType: NSAttributedString.DocumentType) throws {
         let range = NSRange(location: 0, length: attrString.length)
 
         if documentType == .rtfd {
-            // RTFD is a file wrapper (directory)
             guard let wrapper = attrString.rtfdFileWrapper(from: range, documentAttributes: [:]) else {
                 throw ConversionError.failedToWrite(url.lastPathComponent)
             }
@@ -76,27 +98,34 @@ actor DocumentConversionService {
                 from: range,
                 documentAttributes: [.documentType: documentType]
             )
+            guard !data.isEmpty else {
+                throw ConversionError.failedToWrite("Converted data is empty")
+            }
             try data.write(to: url, options: .atomic)
         }
     }
 
-    private func convertFromPDF(sourceURL: URL, targetFormat: SupportedFormat, outputURL: URL) throws {
-        guard let pdfDocument = PDFDocument(url: sourceURL) else {
-            throw ConversionError.failedToLoadFile(sourceURL.lastPathComponent)
+    private func convertFromPDF(data: Data, targetFormat: SupportedFormat, outputURL: URL) throws {
+        guard let pdfDocument = PDFDocument(data: data) else {
+            throw ConversionError.failedToLoadFile("Could not parse PDF data")
+        }
+
+        guard pdfDocument.pageCount > 0 else {
+            throw ConversionError.failedToProcess("PDF has no pages")
         }
 
         switch targetFormat {
         case .txt:
-            // Extract text from all pages
-            guard let text = pdfDocument.string else {
-                throw ConversionError.failedToProcess("Could not extract text from PDF")
+            let text = pdfDocument.string ?? ""
+            guard !text.isEmpty else {
+                throw ConversionError.failedToProcess("No text content found in PDF")
             }
             try text.write(to: outputURL, atomically: true, encoding: .utf8)
 
         case .rtf:
-            // Extract text and create basic RTF
-            guard let text = pdfDocument.string else {
-                throw ConversionError.failedToProcess("Could not extract text from PDF")
+            let text = pdfDocument.string ?? ""
+            guard !text.isEmpty else {
+                throw ConversionError.failedToProcess("No text content found in PDF")
             }
             let attrString = NSAttributedString(
                 string: text,
@@ -108,16 +137,22 @@ actor DocumentConversionService {
             try writeAttributedString(attrString, to: outputURL, documentType: .rtf)
 
         case .html:
-            guard let text = pdfDocument.string else {
-                throw ConversionError.failedToProcess("Could not extract text from PDF")
+            let text = pdfDocument.string ?? ""
+            guard !text.isEmpty else {
+                throw ConversionError.failedToProcess("No text content found in PDF")
             }
             let paragraphs = text.components(separatedBy: "\n")
+                .filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }
                 .map { "<p>\(escapeHTML($0))</p>" }
                 .joined(separator: "\n")
             let html = """
             <!DOCTYPE html>
             <html>
-            <head><meta charset="utf-8"><title>Converted Document</title></head>
+            <head>
+                <meta charset="utf-8">
+                <title>Converted Document</title>
+                <style>body { font-family: -apple-system, sans-serif; max-width: 800px; margin: 40px auto; padding: 0 20px; line-height: 1.6; }</style>
+            </head>
             <body>
             \(paragraphs)
             </body>
@@ -148,15 +183,12 @@ actor DocumentConversionService {
             throw ConversionError.failedToProcess("Could not create PDF context")
         }
 
-        // Create framesetter for multi-page text layout
         let framesetter = CTFramesetterCreateWithAttributedString(attrString as CFAttributedString)
         var currentIndex = 0
         let totalLength = attrString.length
 
         while currentIndex < totalLength {
             pdfContext.beginPage(mediaBox: &mediaBox)
-
-            // Flip coordinate system for text
             pdfContext.textMatrix = .identity
             pdfContext.translateBy(x: 0, y: pageSize.height)
             pdfContext.scaleBy(x: 1.0, y: -1.0)
@@ -178,6 +210,11 @@ actor DocumentConversionService {
         }
 
         pdfContext.closePDF()
+
+        guard pdfData.length > 0 else {
+            throw ConversionError.failedToWrite("Generated PDF data is empty")
+        }
+
         try pdfData.write(to: outputURL, options: .atomic)
     }
 
