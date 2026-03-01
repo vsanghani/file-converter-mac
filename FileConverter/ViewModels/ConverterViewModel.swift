@@ -34,15 +34,7 @@ class ConverterViewModel: ObservableObject {
 
     var availableOutputFormats: [SupportedFormat] {
         guard let firstJob = jobs.first else { return [] }
-        let formats = SupportedFormat.compatibleOutputFormats(for: firstJob.sourceFormat)
-
-        // If all files share the same category, filter to common formats
-        let allSameCategory = jobs.allSatisfy { $0.sourceFormat.category == firstJob.sourceFormat.category }
-        if allSameCategory {
-            return formats
-        }
-
-        return formats
+        return SupportedFormat.compatibleOutputFormats(for: firstJob.sourceFormat)
     }
 
     var detectedCategory: FileCategory? {
@@ -53,7 +45,12 @@ class ConverterViewModel: ObservableObject {
 
     func addFiles(urls: [URL]) {
         for url in urls {
-            guard let format = SupportedFormat.detect(from: url) else { continue }
+            guard let format = SupportedFormat.detect(from: url) else {
+                // Show user which file was unsupported
+                errorMessage = "Unsupported file: \(url.lastPathComponent)"
+                showError = true
+                continue
+            }
 
             // Check if a job for this URL already exists
             guard !jobs.contains(where: { $0.sourceURL == url }) else { continue }
@@ -105,7 +102,7 @@ class ConverterViewModel: ObservableObject {
     func startConversion() {
         guard canConvert else { return }
 
-        // Determine output directory — same as source file directory
+        // Determine output directory — same as source file directory by default
         let outputDir = outputDirectory ?? jobs.first?.sourceURL.deletingLastPathComponent() ?? FileManager.default.temporaryDirectory
 
         isConverting = true
@@ -113,8 +110,16 @@ class ConverterViewModel: ObservableObject {
         completedCount = 0
         failedCount = 0
 
+        // Reset all job statuses
+        for job in jobs {
+            job.status = .pending
+            job.outputURL = nil
+        }
+
         conversionTask = Task {
             let totalJobs = jobs.count
+            var completed = 0
+            var failed = 0
 
             for (index, job) in jobs.enumerated() {
                 guard !Task.isCancelled else { break }
@@ -135,10 +140,14 @@ class ConverterViewModel: ObservableObject {
                     }
                     job.outputURL = outputURL
                     job.status = .completed
-                    completedCount += 1
+                    completed += 1
+                    completedCount = completed
                 } catch {
-                    job.status = .failed(message: error.localizedDescription)
-                    failedCount += 1
+                    let message = error.localizedDescription
+                    print("Conversion failed for \(job.fileName): \(message)")
+                    job.status = .failed(message: message)
+                    failed += 1
+                    failedCount = failed
                 }
             }
 
@@ -166,7 +175,7 @@ class ConverterViewModel: ObservableObject {
         panel.canChooseFiles = false
         panel.canCreateDirectories = true
         panel.message = "Choose where to save converted files"
-        panel.prompt = "Select"
+        panel.prompt = "Select Folder"
 
         if panel.runModal() == .OK {
             outputDirectory = panel.url

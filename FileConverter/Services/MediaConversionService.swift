@@ -2,7 +2,7 @@ import Foundation
 import AVFoundation
 
 /// Service for converting between audio/video formats using AVFoundation
-actor MediaConversionService {
+struct MediaConversionService {
 
     /// Convert a media file from one format to another
     func convert(
@@ -18,25 +18,39 @@ actor MediaConversionService {
 
         let asset = AVURLAsset(url: sourceURL)
 
+        // Verify asset has tracks
+        let tracks = try await asset.loadTracks(withMediaType: .video) + (try await asset.loadTracks(withMediaType: .audio))
+        guard !tracks.isEmpty else {
+            throw ConversionError.failedToLoadFile("No audio or video tracks found in \(sourceURL.lastPathComponent)")
+        }
+
         // Determine the export preset
         let preset = exportPreset(for: targetFormat, from: sourceFormat)
 
-        guard let exportSession = AVAssetExportSession(asset: asset, presetName: preset) else {
+        // Check if preset is compatible
+        let compatiblePresets = AVAssetExportSession.exportPresets(compatibleWith: asset)
+        let finalPreset = compatiblePresets.contains(preset) ? preset : AVAssetExportPresetPassthrough
+
+        guard let exportSession = AVAssetExportSession(asset: asset, presetName: finalPreset) else {
             throw ConversionError.failedToProcess("Could not create export session")
         }
 
-        // Determine the output file type
         guard let outputFileType = avFileType(for: targetFormat) else {
             throw ConversionError.unsupportedFormat(targetFormat.displayName)
+        }
+
+        // Remove existing output file if present
+        if FileManager.default.fileExists(atPath: outputURL.path) {
+            try FileManager.default.removeItem(at: outputURL)
         }
 
         exportSession.outputURL = outputURL
         exportSession.outputFileType = outputFileType
 
         // Start progress monitoring
-        let progressTask = Task {
+        let progressTask = Task.detached {
             while !Task.isCancelled {
-                try await Task.sleep(nanoseconds: 250_000_000) // 250ms
+                try await Task.sleep(nanoseconds: 200_000_000) // 200ms
                 let progress = Double(exportSession.progress)
                 progressHandler(progress)
             }
@@ -49,6 +63,10 @@ actor MediaConversionService {
         switch exportSession.status {
         case .completed:
             progressHandler(1.0)
+            // Verify output
+            guard FileManager.default.fileExists(atPath: outputURL.path) else {
+                throw ConversionError.failedToWrite("Output file was not created")
+            }
         case .failed:
             let errorMessage = exportSession.error?.localizedDescription ?? "Unknown error"
             throw ConversionError.failedToProcess(errorMessage)

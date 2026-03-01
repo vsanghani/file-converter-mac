@@ -20,27 +20,33 @@ class ConversionEngine {
         // Handle file name collisions
         outputURL = uniqueURL(for: outputURL)
 
+        // Ensure output directory exists
+        let fm = FileManager.default
+        let outDir = outputURL.deletingLastPathComponent()
+        if !fm.fileExists(atPath: outDir.path) {
+            try fm.createDirectory(at: outDir, withIntermediateDirectories: true)
+        }
+
+        // Start security-scoped access for the source file
+        let didStartAccessing = job.sourceURL.startAccessingSecurityScopedResource()
+        defer {
+            if didStartAccessing {
+                job.sourceURL.stopAccessingSecurityScopedResource()
+            }
+        }
+
         // Route to appropriate service
         switch job.sourceFormat.category {
         case .image:
-            // Image source can go to image output or PDF
-            if job.targetFormat == .pdf {
-                try await imageService.convert(
-                    sourceURL: job.sourceURL,
-                    targetFormat: job.targetFormat,
-                    outputURL: outputURL
-                )
-            } else {
-                try await imageService.convert(
-                    sourceURL: job.sourceURL,
-                    targetFormat: job.targetFormat,
-                    outputURL: outputURL
-                )
-            }
+            try imageService.convert(
+                sourceURL: job.sourceURL,
+                targetFormat: job.targetFormat,
+                outputURL: outputURL
+            )
             progressHandler(1.0)
 
         case .document:
-            try await documentService.convert(
+            try documentService.convert(
                 sourceURL: job.sourceURL,
                 targetFormat: job.targetFormat,
                 outputURL: outputURL
