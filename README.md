@@ -4,12 +4,13 @@ A native macOS application built with **SwiftUI** that converts files locally be
 
 ## Features
 
-- **Image Conversion**: PNG, JPG/JPEG, HEIC/HEIF, BMP, TIFF, GIF, WebP, ICO
-- **Document Conversion**: PDF, RTF, RTFD, TXT, HTML
-- **Media Conversion**: MOV, MP4, M4V, M4A, WAV, AIFF
+- **Image Conversion**: PNG, JPG/JPEG, HEIC/HEIF, BMP, TIFF, GIF, WebP, ICO, SVG
+- **Document Conversion**: PDF, RTF, RTFD, TXT, HTML, Markdown, CSV, DOCX
+- **Media Conversion**: MOV, MP4, M4V, M4A, AAC, WAV, AIFF, FLAC, AVI
+- **PDF → Images**: Renders each PDF page as a separate PNG/JPG/TIFF
 - **Drag & Drop**: Drop files directly onto the app
 - **Batch Processing**: Convert multiple files at once
-- **Local Only**: All conversions happen on-device
+- **Local Only**: All conversions happen on-device — no internet required
 
 ## Requirements
 
@@ -33,11 +34,18 @@ swift run FileConverter
 
 ## Supported Conversions
 
-| Category   | Input Formats                                     | Output Formats                          |
-|------------|---------------------------------------------------|-----------------------------------------|
-| Images     | PNG, JPG, JPEG, HEIC, HEIF, BMP, TIFF, GIF, WebP, ICO | PNG, JPG, JPEG, HEIC, TIFF, BMP, GIF, PDF |
-| Documents  | PDF, RTF, RTFD, TXT, HTML                         | PDF, RTF, TXT, HTML                     |
-| Media      | MOV, MP4, M4V, M4A, WAV, AIFF                     | MOV, MP4, M4V, M4A, WAV, AIFF          |
+| Category   | Input Formats                                                        | Output Formats                                         |
+|------------|----------------------------------------------------------------------|--------------------------------------------------------|
+| Images     | PNG, JPG, JPEG, HEIC, HEIF, BMP, TIFF, GIF, WebP, ICO               | PNG, JPG, JPEG, HEIC, TIFF, BMP, GIF, WebP, PDF, SVG  |
+| Documents  | PDF, RTF, RTFD, TXT, HTML, Markdown (.md), CSV, DOCX                 | PDF, RTF, RTFD, TXT, HTML, Markdown, CSV               |
+| PDF→Images | PDF (multi-page)                                                     | PNG, JPG, TIFF (one file per page)                     |
+| Media      | MOV, MP4, M4V, M4A, AAC, WAV, AIFF, FLAC (in), AVI (in)             | MOV, MP4, M4V, M4A, AAC, WAV, AIFF                    |
+
+> **Notes:**
+> - **DOCX** conversion uses the built-in `textutil` CLI (ships with macOS). Outputs: TXT, HTML, RTF, PDF.
+> - **SVG** output embeds the raster image as a base64-encoded PNG inside an SVG wrapper.
+> - **FLAC** and **AVI** are supported as _input_ only; native macOS encoding for those formats is not available.
+> - **AAC** is exported as an M4A container (standard AAC audio).
 
 ## Architecture
 

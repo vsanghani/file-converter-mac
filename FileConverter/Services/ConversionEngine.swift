@@ -46,6 +46,18 @@ class ConversionEngine {
             progressHandler(1.0)
 
         case .document:
+            // Special case: PDF → image (per-page rendering)
+            if job.sourceFormat == .pdf && job.targetFormat.category == .image {
+                let pageURLs = try imageService.convertPDFToImages(
+                    sourceURL: job.sourceURL,
+                    targetFormat: job.targetFormat,
+                    outputURL: outputURL
+                )
+                progressHandler(1.0)
+                // Return the first page URL as the primary output
+                return pageURLs.first ?? outputURL
+            }
+
             try documentService.convert(
                 sourceURL: job.sourceURL,
                 targetFormat: job.targetFormat,
