@@ -99,7 +99,7 @@ struct DocumentConversionService {
                     string: text,
                     attributes: [
                         .font: NSFont.monospacedSystemFont(ofSize: 12, weight: .regular),
-                        .foregroundColor: NSColor.textColor
+                        .foregroundColor: NSColor.black
                     ]
                 )
             }
@@ -153,7 +153,7 @@ struct DocumentConversionService {
                 string: text,
                 attributes: [
                     .font: NSFont.systemFont(ofSize: 12),
-                    .foregroundColor: NSColor.textColor
+                    .foregroundColor: NSColor.black
                 ]
             )
             try writeAttributedString(attrString, to: outputURL, documentType: .rtf)
@@ -212,8 +212,7 @@ struct DocumentConversionService {
         while currentIndex < totalLength {
             pdfContext.beginPage(mediaBox: &mediaBox)
             pdfContext.textMatrix = .identity
-            pdfContext.translateBy(x: 0, y: pageSize.height)
-            pdfContext.scaleBy(x: 1.0, y: -1.0)
+            pdfContext.setFillColor(CGColor(red: 0, green: 0, blue: 0, alpha: 1))
 
             let framePath = CGPath(rect: textRect, transform: nil)
             let frame = CTFramesetterCreateFrame(

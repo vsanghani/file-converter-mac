@@ -92,7 +92,7 @@ struct ImageConversionService {
         let directory = outputURL.deletingLastPathComponent()
         let baseName = outputURL.deletingPathExtension().lastPathComponent
         let ext = targetFormat.fileExtension
-        let scale: CGFloat = 2.0 // 2× for good resolution
+        let scale: CGFloat = 2.0
 
         var outputURLs: [URL] = []
 
@@ -100,33 +100,39 @@ struct ImageConversionService {
             guard let page = pdfDocument.page(at: pageIndex) else { continue }
 
             let pageRect = page.bounds(for: .mediaBox)
-            let imageSize = CGSize(width: pageRect.width * scale, height: pageRect.height * scale)
+            let pixelWidth  = Int(pageRect.width  * scale)
+            let pixelHeight = Int(pageRect.height * scale)
 
-            let bitmapRep = NSBitmapImageRep(
-                bitmapDataPlanes: nil,
-                pixelsWide: Int(imageSize.width),
-                pixelsHigh: Int(imageSize.height),
-                bitsPerSample: 8,
-                samplesPerPixel: 4,
-                hasAlpha: true,
-                isPlanar: false,
-                colorSpaceName: .deviceRGB,
-                bytesPerRow: 0,
-                bitsPerPixel: 0
-            )
-
-            guard let rep = bitmapRep else {
-                throw ConversionError.failedToProcess("Could not create bitmap for page \(pageIndex + 1)")
+            // Create a CGBitmapContext (CG origin = bottom-left, matching PDF coords)
+            guard let context = CGContext(
+                data: nil,
+                width: pixelWidth,
+                height: pixelHeight,
+                bitsPerComponent: 8,
+                bytesPerRow: pixelWidth * 4,
+                space: CGColorSpaceCreateDeviceRGB(),
+                bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
+            ) else {
+                throw ConversionError.failedToProcess("Could not create bitmap context for page \(pageIndex + 1)")
             }
 
-            NSGraphicsContext.saveGraphicsState()
-            NSGraphicsContext.current = NSGraphicsContext(bitmapImageRep: rep)
-            NSColor.white.setFill()
-            NSRect(origin: .zero, size: imageSize).fill()
-            let context = NSGraphicsContext.current?.cgContext
-            context?.scaleBy(x: scale, y: scale)
-            page.draw(with: .mediaBox, to: context!)
-            NSGraphicsContext.restoreGraphicsState()
+            // White background
+            context.setFillColor(CGColor(red: 1, green: 1, blue: 1, alpha: 1))
+            context.fill(CGRect(x: 0, y: 0, width: pixelWidth, height: pixelHeight))
+
+            // Scale so one PDF point == `scale` pixels
+            context.scaleBy(x: scale, y: scale)
+
+            // Handle PDFs whose mediaBox origin isn't at (0,0)
+            if pageRect.origin != .zero {
+                context.translateBy(x: -pageRect.origin.x, y: -pageRect.origin.y)
+            }
+
+            page.draw(with: .mediaBox, to: context)
+
+            guard let cgImage = context.makeImage() else {
+                throw ConversionError.failedToProcess("Could not create image for page \(pageIndex + 1)")
+            }
 
             let pageURL: URL
             if pdfDocument.pageCount == 1 {
@@ -134,10 +140,6 @@ struct ImageConversionService {
             } else {
                 let suffix = String(format: "_page%03d", pageIndex + 1)
                 pageURL = directory.appendingPathComponent("\(baseName)\(suffix).\(ext)")
-            }
-
-            guard let cgImage = rep.cgImage else {
-                throw ConversionError.failedToProcess("Could not get CGImage for page \(pageIndex + 1)")
             }
 
             guard let destination = CGImageDestinationCreateWithURL(
