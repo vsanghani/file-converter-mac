@@ -33,6 +33,7 @@ enum SupportedFormat: String, CaseIterable, Identifiable, Hashable {
     case gif
     case webp
     case ico
+    case svg
 
     // Documents
     case pdf
@@ -40,6 +41,9 @@ enum SupportedFormat: String, CaseIterable, Identifiable, Hashable {
     case rtfd
     case txt
     case html
+    case md
+    case csv
+    case docx
 
     // Media
     case mov
@@ -48,6 +52,9 @@ enum SupportedFormat: String, CaseIterable, Identifiable, Hashable {
     case m4a
     case wav
     case aiff
+    case aac
+    case flac
+    case avi
 
     var id: String { rawValue }
 
@@ -63,17 +70,24 @@ enum SupportedFormat: String, CaseIterable, Identifiable, Hashable {
         case .gif: return "GIF"
         case .webp: return "WebP"
         case .ico: return "ICO"
+        case .svg: return "SVG"
         case .pdf: return "PDF"
         case .rtf: return "RTF"
         case .rtfd: return "RTFD"
         case .txt: return "Plain Text"
         case .html: return "HTML"
+        case .md: return "Markdown"
+        case .csv: return "CSV"
+        case .docx: return "DOCX"
         case .mov: return "MOV"
         case .mp4: return "MP4"
         case .m4v: return "M4V"
         case .m4a: return "M4A"
         case .wav: return "WAV"
         case .aiff: return "AIFF"
+        case .aac: return "AAC"
+        case .flac: return "FLAC"
+        case .avi: return "AVI"
         }
     }
 
@@ -83,11 +97,11 @@ enum SupportedFormat: String, CaseIterable, Identifiable, Hashable {
 
     var category: FileCategory {
         switch self {
-        case .png, .jpg, .jpeg, .heic, .heif, .bmp, .tiff, .gif, .webp, .ico:
+        case .png, .jpg, .jpeg, .heic, .heif, .bmp, .tiff, .gif, .webp, .ico, .svg:
             return .image
-        case .pdf, .rtf, .rtfd, .txt, .html:
+        case .pdf, .rtf, .rtfd, .txt, .html, .md, .csv, .docx:
             return .document
-        case .mov, .mp4, .m4v, .m4a, .wav, .aiff:
+        case .mov, .mp4, .m4v, .m4a, .wav, .aiff, .aac, .flac, .avi:
             return .media
         }
     }
@@ -102,17 +116,24 @@ enum SupportedFormat: String, CaseIterable, Identifiable, Hashable {
         case .gif: return .gif
         case .webp: return .webP
         case .ico: return .ico
+        case .svg: return UTType(filenameExtension: "svg") ?? UTType("public.svg-image")
         case .pdf: return .pdf
         case .rtf: return .rtf
         case .rtfd: return .rtfd
         case .txt: return .plainText
         case .html: return .html
+        case .md: return UTType(filenameExtension: "md") ?? .plainText
+        case .csv: return .commaSeparatedText
+        case .docx: return UTType(filenameExtension: "docx") ?? UTType("org.openxmlformats.wordprocessingml.document")
         case .mov: return .quickTimeMovie
         case .mp4: return .mpeg4Movie
         case .m4v: return .appleProtectedMPEG4Video
         case .m4a: return .appleProtectedMPEG4Audio
         case .wav: return .wav
         case .aiff: return .aiff
+        case .aac: return UTType(filenameExtension: "aac") ?? UTType("public.aac-audio")
+        case .flac: return UTType(filenameExtension: "flac") ?? UTType("org.xiph.flac")
+        case .avi: return UTType(filenameExtension: "avi") ?? UTType("public.avi")
         }
     }
 
@@ -126,7 +147,7 @@ enum SupportedFormat: String, CaseIterable, Identifiable, Hashable {
         let category = input.category
         switch category {
         case .image:
-            // Images can convert to any image format (excluding same) + PDF
+            // Images can convert to any image format (excluding same) + PDF + SVG
             var formats = SupportedFormat.allCases.filter { $0.category == .image && $0 != input }
             // Also allow image → PDF
             formats.append(.pdf)
@@ -138,12 +159,23 @@ enum SupportedFormat: String, CaseIterable, Identifiable, Hashable {
             }
             return formats
         case .document:
+            // PDF can also export to image formats (per-page)
+            if input == .pdf {
+                var formats = SupportedFormat.allCases.filter { $0.category == .document && $0 != input }
+                // PDF → image (renders each page)
+                formats += [.png, .jpg, .tiff]
+                return formats
+            }
+            // DOCX can only convert to plain text formats natively
+            if input == .docx {
+                return [.txt, .pdf, .html, .rtf]
+            }
             return SupportedFormat.allCases.filter { $0.category == .document && $0 != input }
         case .media:
             // Separate audio and video
-            let audioFormats: [SupportedFormat] = [.m4a, .wav, .aiff]
-            let videoFormats: [SupportedFormat] = [.mov, .mp4, .m4v]
-            if audioFormats.contains(input) {
+            let audioFormats: [SupportedFormat] = [.m4a, .aac, .wav, .aiff]
+            let videoFormats: [SupportedFormat] = [.mov, .mp4, .m4v, .avi]
+            if audioFormats.contains(input) || input == .flac {
                 return audioFormats.filter { $0 != input }
             } else {
                 return videoFormats.filter { $0 != input }

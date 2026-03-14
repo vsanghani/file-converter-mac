@@ -80,7 +80,7 @@ struct MediaConversionService {
     // MARK: - Private Helpers
 
     private func exportPreset(for target: SupportedFormat, from source: SupportedFormat) -> String {
-        let audioFormats: [SupportedFormat] = [.m4a, .wav, .aiff]
+        let audioFormats: [SupportedFormat] = [.m4a, .aac, .wav, .aiff]
 
         if audioFormats.contains(target) {
             return AVAssetExportPresetAppleM4A
@@ -95,8 +95,10 @@ struct MediaConversionService {
         case .mp4: return .mp4
         case .m4v: return .m4v
         case .m4a: return .m4a
+        case .aac: return .m4a  // AAC audio is exported as an M4A container
         case .wav: return .wav
         case .aiff: return AVFileType(rawValue: "public.aiff-audio")
+        case .avi: return AVFileType(rawValue: "public.avi")
         default: return nil
         }
     }
