@@ -3,7 +3,8 @@ import SwiftUI
 /// Main content view — immersive glassmorphism layout
 struct ContentView: View {
     @ObservedObject var viewModel: ConverterViewModel
-    @State private var showAbout = false
+    @State private var showPrivacyOnboarding = false
+    @State private var showHowConversionsWork = false
 
     var body: some View {
         ZStack {
@@ -15,6 +16,12 @@ struct ContentView: View {
                 // Custom title bar
                 customTitleBar
                     .padding(.top, 8)
+
+                PrivacyTrustBanner {
+                    showHowConversionsWork = true
+                }
+                .padding(.horizontal, 24)
+                .padding(.bottom, 4)
 
                 // Content area
                 ScrollView(.vertical, showsIndicators: false) {
@@ -58,6 +65,24 @@ struct ContentView: View {
             }
         }
         .preferredColorScheme(.dark)
+        .onAppear {
+            if !PrivacyOnboardingState.hasSeen {
+                showPrivacyOnboarding = true
+            }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .showHowConversionsWork)) { _ in
+            showHowConversionsWork = true
+        }
+        .sheet(isPresented: $showPrivacyOnboarding, onDismiss: {
+            PrivacyOnboardingState.hasSeen = true
+        }) {
+            PrivacyOnboardingView(isPresented: $showPrivacyOnboarding) {
+                showHowConversionsWork = true
+            }
+        }
+        .sheet(isPresented: $showHowConversionsWork) {
+            HowConversionsWorkView()
+        }
         .alert("Conversion Complete", isPresented: $viewModel.showCompletionAlert) {
             Button("OK") {}
             if viewModel.completedCount > 0 {
@@ -198,5 +223,39 @@ struct ContentView: View {
             return "\(viewModel.completedCount) file(s) converted successfully, \(viewModel.failedCount) failed."
         }
         return "\(viewModel.completedCount) file(s) converted successfully!"
+    }
+}
+
+// MARK: - Privacy trust line (main screen)
+
+private struct PrivacyTrustBanner: View {
+    let onLearnMore: () -> Void
+
+    var body: some View {
+        HStack(spacing: 10) {
+            Image(systemName: "lock.fill")
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundColor(.green.opacity(0.85))
+            Text("Your files never leave this Mac — processed only on your device.")
+                .font(.system(size: 12, weight: .medium))
+                .foregroundColor(.white.opacity(0.55))
+            Spacer(minLength: 0)
+            Button("How conversions work") {
+                onLearnMore()
+            }
+            .font(.system(size: 12, weight: .semibold))
+            .buttonStyle(.plain)
+            .foregroundColor(.cyan.opacity(0.85))
+        }
+        .padding(.horizontal, 14)
+        .padding(.vertical, 10)
+        .background(
+            RoundedRectangle(cornerRadius: 12)
+                .fill(Color.white.opacity(0.06))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 12)
+                        .strokeBorder(Color.white.opacity(0.08), lineWidth: 1)
+                )
+        )
     }
 }
