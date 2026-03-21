@@ -56,6 +56,12 @@
     "swiftmodule": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/FileTypeDetector~partial.swiftmodule",
     "swift-dependencies": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/FileTypeDetector.swiftdeps"
   },
+  "/Users/vsanghani/_GitHub/file-converter-mac/FileConverter/Utilities/PrivacyOnboardingState.swift": {
+    "dependencies": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/PrivacyOnboardingState.d",
+    "object": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/PrivacyOnboardingState.swift.o",
+    "swiftmodule": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/PrivacyOnboardingState~partial.swiftmodule",
+    "swift-dependencies": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/PrivacyOnboardingState.swiftdeps"
+  },
   "/Users/vsanghani/_GitHub/file-converter-mac/FileConverter/ViewModels/ConverterViewModel.swift": {
     "dependencies": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/ConverterViewModel.d",
     "object": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/ConverterViewModel.swift.o",
@@ -97,5 +103,17 @@
     "object": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/GlassComponents.swift.o",
     "swiftmodule": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/GlassComponents~partial.swiftmodule",
     "swift-dependencies": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/GlassComponents.swiftdeps"
+  },
+  "/Users/vsanghani/_GitHub/file-converter-mac/FileConverter/Views/HowConversionsWorkView.swift": {
+    "dependencies": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/HowConversionsWorkView.d",
+    "object": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/HowConversionsWorkView.swift.o",
+    "swiftmodule": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/HowConversionsWorkView~partial.swiftmodule",
+    "swift-dependencies": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/HowConversionsWorkView.swiftdeps"
+  },
+  "/Users/vsanghani/_GitHub/file-converter-mac/FileConverter/Views/PrivacyOnboardingView.swift": {
+    "dependencies": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/PrivacyOnboardingView.d",
+    "object": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/PrivacyOnboardingView.swift.o",
+    "swiftmodule": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/PrivacyOnboardingView~partial.swiftmodule",
+    "swift-dependencies": "/Users/vsanghani/_GitHub/file-converter-mac/.build/arm64-apple-macosx/debug/FileConverter.build/PrivacyOnboardingView.swiftdeps"
   }
 }

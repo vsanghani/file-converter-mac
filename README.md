@@ -11,6 +11,17 @@ A native macOS application built with **SwiftUI** that converts files locally be
 - **Drag & Drop**: Drop files directly onto the app
 - **Batch Processing**: Convert multiple files at once
 - **Local Only**: All conversions happen on-device — no internet required
+- **Privacy-first UI**: In-app messaging and a “How conversions work” screen explain local processing
+
+## App Store & privacy (marketing)
+
+When you submit to the App Store, align the product page and **App Privacy** questionnaire with how the app behaves:
+
+- **Data Not Collected** — If the app does not collect analytics, crash data, or personal data, declare that you do not collect data used to track the user, and that no data is linked to the user (or only what is strictly necessary for app functionality, if you add something later).
+- **No tracking** — No third-party analytics or ad SDKs means you can state that you do not track users across apps and websites.
+- **Optional crash reporting** — If you add crash reporting later, make it **opt-in** in Settings, document it in the privacy screen, and update App Privacy accordingly.
+
+The in-app **How conversions work** screen summarizes Apple frameworks used for conversion; keep that text consistent with your privacy answers.
 
 ## Requirements
 
@@ -76,9 +87,12 @@ FileConverter/
 │   ├── DropZoneView.swift
 │   ├── FormatPickerView.swift
 │   ├── ConversionProgressView.swift
-│   └── FileListView.swift
+│   ├── FileListView.swift
+│   ├── PrivacyOnboardingView.swift
+│   └── HowConversionsWorkView.swift
 └── Utilities/
-    └── FileTypeDetector.swift
+    ├── FileTypeDetector.swift
+    └── PrivacyOnboardingState.swift
 ```
 
 ## Keyboard Shortcuts

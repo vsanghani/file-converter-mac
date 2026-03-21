@@ -50,6 +50,12 @@ struct FileConverterApp: App {
                 }
                 .keyboardShortcut("d", modifiers: [.command, .shift])
             }
+
+            CommandGroup(after: .help) {
+                Button("How Conversions Work") {
+                    NotificationCenter.default.post(name: .showHowConversionsWork, object: nil)
+                }
+            }
         }
     }
 
@@ -74,4 +80,5 @@ extension Notification.Name {
     static let clearAllFiles = Notification.Name("clearAllFiles")
     static let startConversion = Notification.Name("startConversion")
     static let chooseOutputFolder = Notification.Name("chooseOutputFolder")
+    static let showHowConversionsWork = Notification.Name("showHowConversionsWork")
 }
